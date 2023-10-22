@@ -33,10 +33,11 @@ pip install VehicleDetectionTracker
 ## Usage 📷
 
 ```python
-from VehicleDetectionTracker import VehicleDetectionTracker
+from VehicleDetectionTracker.VehicleTracker import VehicleTracker
+import cv2
 
 # Create a VehicleDetectionTracker instance
-tracker = VehicleDetectionTracker()
+tracker = VehicleTracker()
 
 # Process a frame
 frame = cv2.imread('your_frame.jpg')
