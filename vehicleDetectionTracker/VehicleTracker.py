@@ -142,16 +142,15 @@ class VehicleTracker:
                 track_ids = []  # No IDs available
                 
             annotated_frame = results[0].plot()
-
+            
             for box, track_id in zip(boxes, track_ids):
                 x, y, w, h = box
                 track = self.track_history[track_id]
                 track.append((float(x), float(y)))  # x, y center point
-                # Initialize speed_kmph with a default value
                 speed_kmph = 0.0
-                direction = None  # Initialize direction as None
+                direction = None
                 color_label = None
-                roi_base64 = None # Base64-encoded ROI image
+                roi_base64 = None
                 timestamp = int(time.time())
 
                 if len(track) >= 2:
@@ -184,45 +183,45 @@ class VehicleTracker:
                         text = f"Vehicle {track_id}: Speed {speed_kmph:.2f} km/h"
                         cv2.putText(annotated_frame, text, (int(x), int(y) - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)
 
-                    # Color estimation
-                    roi = frame[int(y):int(y + h), int(x):int(x + w)]  # Define the ROI
-                    if roi.size > 0:
-                        # Extract color samples (e.g., from the top of the ROI)
-                        color_samples = roi[0:10, :, :]
-                        # Calculate the average color
-                        avg_color = np.mean(color_samples, axis=(0, 1))
-                        # Assign a color label based on the average color
-                        color_label = self._assign_color(avg_color)
-                        # Crop the ROI and convert it to base64
-                        _, buffer = cv2.imencode('.jpg', roi)
-                        roi_base64 = base64.b64encode(buffer).decode('utf-8')
+                # Color estimation
+                roi = frame[int(y):int(y + h), int(x):int(x + w)]  # Define the ROI
+                if roi.size > 0:
+                    # Extract color samples (e.g., from the top of the ROI)
+                    color_samples = roi[0:10, :, :]
+                    # Calculate the average color
+                    avg_color = np.mean(color_samples, axis=(0, 1))
+                    # Assign a color label based on the average color
+                    color_label = self._assign_color(avg_color)
+                    # Crop the ROI and convert it to base64
+                    _, buffer = cv2.imencode('.jpg', roi)
+                    roi_base64 = base64.b64encode(buffer).decode('utf-8')
 
-                    if len(track) > 30:  # retain 90 tracks for 90 frames
-                        track.pop(0)
+                if len(track) > 30:  # retain 30 tracks for 30 frames
+                    track.pop(0)
 
-                    # Draw the tracking lines
-                    points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
-                    cv2.polylines(
-                        annotated_frame,
-                        [points],
-                        isClosed=False,
-                        color=(230, 230, 230),
-                        thickness=10,
-                    )
+                # Draw the tracking lines
+                points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+                cv2.polylines(
+                    annotated_frame,
+                    [points],
+                    isClosed=False,
+                    color=(230, 230, 230),
+                    thickness=10,
+                )
 
-                    processed_info.append({
-                        'vehicle_id': track_id,
-                        'direction': direction,
-                        'color': color_label,
-                        'timestamp': timestamp,
-                        'speed_kmph': speed_kmph if self.speed_threshold_min_kmph <= speed_kmph <= self.speed_threshold_max_kmph else None,
-                        'roi_base64': roi_base64
-                    })
+                processed_info.append({
+                    'vehicle_id': track_id,
+                    'direction': direction,
+                    'color': color_label,
+                    'timestamp': timestamp,
+                    'speed_kmph': speed_kmph if self.speed_threshold_min_kmph <= speed_kmph <= self.speed_threshold_max_kmph else None,
+                    'roi_base64': roi_base64
+                })
 
-                    logger.info(f"Processed Vehicle {track_id}:")
-                    logger.info(f" - Speed: {speed_kmph:.2f} km/h")
-                    logger.info(f" - Direction: {direction}")
-                    logger.info(f" - Color: {color_label}")
+                logger.info(f"Processed Vehicle {track_id}:")
+                logger.info(f" - Speed: {speed_kmph:.2f} km/h")
+                logger.info(f" - Direction: {direction}")
+                logger.info(f" - Color: {color_label}")
 
             # Convert annotated frame to base64
             logger.info("Frame processed successfully.")
