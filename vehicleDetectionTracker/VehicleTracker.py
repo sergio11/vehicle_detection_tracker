@@ -4,6 +4,10 @@ import numpy as np
 import base64
 from collections import defaultdict
 from ultralytics import YOLO
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class VehicleTracker:
     """
@@ -23,7 +27,7 @@ class VehicleTracker:
         self.track_history = defaultdict(lambda: [])
         self.frame_counter = 0
 
-    def assign_color(self, avg_color):
+    def _assign_color(self, avg_color):
         # Define ranges for common vehicle colors in RGB format
         color_ranges = {
             "Red": (np.array([120, 0, 0]), np.array([255, 60, 60])),
@@ -45,7 +49,72 @@ class VehicleTracker:
 
         # If the color doesn't match any defined ranges, return "Unknown"
         return "Unknown"
+    
+    def _convert_frame_to_base64(self, frame):
+        """
+        Convert the annotated frame to a base64-encoded string.
 
+        Args:
+            frame (numpy.ndarray): The annotated frame.
+
+        Returns:
+            str: Base64-encoded frame.
+        """
+        _, buffer = cv2.imencode('.jpg', frame)
+        return base64.b64encode(buffer).decode()
+    
+
+    def _enhance_night_vision(self, frame):
+        """
+        Enhance the night vision of a frame by improving contrast, brightness, and reducing noise.
+
+        Args:
+            frame (numpy.ndarray): Input frame to enhance.
+
+        Returns:
+            numpy.ndarray: Enhanced frame or the original frame if enhancement is not possible.
+        """
+        try:
+            # Ensure that the frame is in the correct format (BGR)
+            if frame is None or len(frame.shape) != 3 or frame.shape[2] != 3:
+                raise ValueError("Invalid frame format. Please ensure the input frame is in BGR format.")
+
+            # Apply adaptive histogram equalization for contrast enhancement
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            enhanced_frame = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8)).apply(gray_frame)
+
+            # Increase brightness and add some contrast
+            enhanced_frame = cv2.convertScaleAbs(enhanced_frame, alpha=1.2, beta=20)
+
+            # Convert the enhanced grayscale frame back to color
+            enhanced_frame = cv2.cvtColor(enhanced_frame, cv2.COLOR_GRAY2BGR)
+
+            # Apply median blur for noise reduction
+            enhanced_frame = cv2.medianBlur(enhanced_frame, 5)
+
+            return enhanced_frame
+        except Exception as e:
+            # If an exception occurs during enhancement, return the original frame
+            print(f"Error during night vision enhancement: {e}")
+            return frame
+
+    
+    def process_frame_base64(self, frame_base64):
+        """
+        Process a frame to detect and track vehicles.
+
+        Args:
+            frame_base64 (str): Base64-encoded input frame for processing.
+
+        Returns:
+            dict or None: Processed information including tracked vehicles' details and the annotated frame in base64.
+        """
+        # Decode the base64-encoded frame
+        frame = base64.b64decode(frame_base64)
+        frame = np.frombuffer(frame, dtype=np.uint8)
+        frame = cv2.imdecode(frame, flags=cv2.IMREAD_COLOR)
+        return self.process_frame(frame)
+    
     def process_frame(self, frame):
         """
         Process a frame to detect and track vehicles.
@@ -54,12 +123,15 @@ class VehicleTracker:
             frame (numpy.ndarray): Input frame for processing.
 
         Returns:
-            dict or None: Processed information including tracked vehicles' details and the annotated frame in base64.
+            dict: Processed information including tracked vehicles' details and the annotated frame in base64.
         """
-        results = self.model.track(frame, persist=True)
+
+        # Enhance the night vision of the frame
+        enhanced_frame = self._enhance_night_vision(frame)
+
+        results = self.model.track(enhanced_frame, persist=True)
         processed_info = []
 
-        # Check if there are detected objects
         if results[0].boxes is not None:
             # Get the boxes and track IDs
             boxes = results[0].boxes.xywh.cpu()
@@ -120,7 +192,7 @@ class VehicleTracker:
                         # Calculate the average color
                         avg_color = np.mean(color_samples, axis=(0, 1))
                         # Assign a color label based on the average color
-                        color_label = self.assign_color(avg_color)
+                        color_label = self._assign_color(avg_color)
                         # Crop the ROI and convert it to base64
                         _, buffer = cv2.imencode('.jpg', roi)
                         roi_base64 = base64.b64encode(buffer).decode('utf-8')
@@ -147,14 +219,20 @@ class VehicleTracker:
                         'roi_base64': roi_base64
                     })
 
-                # Convert annotated frame to base64
-                _, buffer = cv2.imencode('.jpg', annotated_frame)
-                frame_base64 = base64.b64encode(buffer).decode()
+                    logger.info(f"Processed Vehicle {track_id}:")
+                    logger.info(f" - Speed: {speed_kmph:.2f} km/h")
+                    logger.info(f" - Direction: {direction}")
+                    logger.info(f" - Color: {color_label}")
 
-                return {
-                    'processed_info': processed_info,
-                    'frame_base64': frame_base64
-                }
-
-            else:
-                return None
+            # Convert annotated frame to base64
+            logger.info("Frame processed successfully.")
+            return {
+                'processed_info': processed_info,
+                'frame_base64': self._convert_frame_to_base64(annotated_frame)
+            }
+        else:
+            logger.info("No relevant objects detected in the frame.")
+            return {
+                'processed_info': [{'message': 'No relevant objects detected in the frame'}],
+                'frame_base64': self._convert_frame_to_base64(enhanced_frame)
+            }
