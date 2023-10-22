@@ -5,6 +5,7 @@ import base64
 from collections import defaultdict
 from ultralytics import YOLO
 import logging
+import pytesseract
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -114,7 +115,42 @@ class VehicleTracker:
         frame = np.frombuffer(frame, dtype=np.uint8)
         frame = cv2.imdecode(frame, flags=cv2.IMREAD_COLOR)
         return self.process_frame(frame)
+
     
+    def _get_license_plate(self, roi):
+        """
+        Get the license plate from the ROI using OCR.
+
+        Args:
+            roi (numpy.ndarray): Region of interest (ROI) image containing the license plate.
+
+        Returns:
+            str: Extracted license plate text. Returns None if no license plate is found.
+        """
+        try:
+            if roi is None:
+                return None
+
+            # Convert the ROI to grayscale
+            roi_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+
+            # Apply a binary threshold using Otsu's method to highlight characters
+            _, thresholded = cv2.threshold(roi_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+            # Optional: Apply opening and closing operations to enhance text quality
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            thresholded = cv2.morphologyEx(thresholded, cv2.MORPH_OPEN, kernel)
+            thresholded = cv2.morphologyEx(thresholded, cv2.MORPH_CLOSE, kernel)
+
+            # Use Tesseract OCR to extract text
+            license_plate_text = pytesseract.image_to_string(thresholded)
+
+            return license_plate_text.strip()
+        except Exception as e:
+            # Handle any exceptions that may occur during OCR
+            print(f"An error occurred during license plate extraction: {str(e)}")
+            return None
+
     def process_frame(self, frame):
         """
         Process a frame to detect and track vehicles.
@@ -142,7 +178,7 @@ class VehicleTracker:
                 track_ids = []  # No IDs available
                 
             annotated_frame = results[0].plot()
-            
+
             for box, track_id in zip(boxes, track_ids):
                 x, y, w, h = box
                 track = self.track_history[track_id]
@@ -151,6 +187,7 @@ class VehicleTracker:
                 direction = None
                 color_label = None
                 roi_base64 = None
+                license_plate = None
                 timestamp = int(time.time())
 
                 if len(track) >= 2:
@@ -194,6 +231,8 @@ class VehicleTracker:
                     color_label = self._assign_color(avg_color)
                     # Crop the ROI and convert it to base64
                     _, buffer = cv2.imencode('.jpg', roi)
+                    # Extract the license plate using OCR
+                    license_plate = self._get_license_plate(roi)
                     roi_base64 = base64.b64encode(buffer).decode('utf-8')
 
                 if len(track) > 30:  # retain 30 tracks for 30 frames
@@ -215,13 +254,15 @@ class VehicleTracker:
                     'color': color_label,
                     'timestamp': timestamp,
                     'speed_kmph': speed_kmph if self.speed_threshold_min_kmph <= speed_kmph <= self.speed_threshold_max_kmph else None,
-                    'roi_base64': roi_base64
+                    'roi_base64': roi_base64,
+                    'license_plate': license_plate
                 })
 
                 logger.info(f"Processed Vehicle {track_id}:")
                 logger.info(f" - Speed: {speed_kmph:.2f} km/h")
                 logger.info(f" - Direction: {direction}")
                 logger.info(f" - Color: {color_label}")
+                logger.info(f" - License Plate: {license_plate}")
 
             # Convert annotated frame to base64
             logger.info("Frame processed successfully.")
