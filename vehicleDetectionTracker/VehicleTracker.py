@@ -4,11 +4,8 @@ import numpy as np
 import base64
 from collections import defaultdict
 from ultralytics import YOLO
-import logging
 import pytesseract
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 class VehicleTracker:
     """
@@ -165,88 +162,103 @@ class VehicleTracker:
         # Enhance the night vision of the frame
         enhanced_frame = self._enhance_night_vision(frame)
 
+        # Execute the tracking using the YOLO model
         results = self.model.track(enhanced_frame, persist=True)
         processed_info = []
+        num_vehicles_detected = 0
 
         if results[0].boxes is not None:
             # Get the boxes and track IDs
             boxes = results[0].boxes.xywh.cpu()
+            num_vehicles_detected = len(boxes)
             # Check if there are IDs associated with the detections
+            print("Before checking for track IDs.")
             if results[0].boxes.id is not None:
                 track_ids = results[0].boxes.id.int().cpu().tolist()
+                print("Track IDs are available.")
             else:
                 track_ids = []  # No IDs available
-                
+                print("No track IDs available.")
+                print(f"Contents of results[0].boxes.id: {results[0].boxes.id}")
+
+            print(f"Number of boxes: {len(boxes)}")
+            print(f"Number of track IDs: {len(track_ids)}")
+
             annotated_frame = results[0].plot()
 
-            for box, track_id in zip(boxes, track_ids):
-                x, y, w, h = box
-                track = self.track_history[track_id]
-                track.append((float(x), float(y)))  # x, y center point
-                speed_kmph = 0.0
-                direction = None
-                color_label = None
-                roi_base64 = None
-                license_plate = None
-                timestamp = int(time.time())
+            # Check if boxes and track_ids have the same length
+            if len(boxes) != len(track_ids):
+                print("Error: Mismatch between the number of boxes and track IDs.")
+            else:
+                for box, track_id in zip(boxes, track_ids):
+                    x, y, w, h = box
+                    track = self.track_history[track_id]
+                    track.append((float(x), float(y)))  # x, y center point
+                    speed_kmph = 0.0
+                    direction = None
+                    color_label = None
+                    roi_base64 = None
+                    license_plate = None
+                    timestamp = int(time.time())
 
-                if len(track) >= 2:
-                    x1, y1 = track[0]  # Initial position
-                    x2, y2 = track[-1]  # Current position
-                        
-                    # Calculate speed
-                    distance_pixels = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-                    speed_pixels_per_frame = distance_pixels / len(track)
-                    speed_kmph = speed_pixels_per_frame * self.frame_rate * self.pixel_scale * 3.6
+                    if len(track) >= 2:
+                        x1, y1 = track[0]  # Initial position
+                        x2, y2 = track[-1]  # Current position
+                            
+                        # Calculate speed
+                        distance_pixels = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+                        speed_pixels_per_frame = distance_pixels / len(track)
+                        speed_kmph = speed_pixels_per_frame * self.frame_rate * self.pixel_scale * 3.6
 
-                    # Calculate direction based on position difference
-                    dx = x2 - x1
-                    dy = y2 - y1
+                        # Calculate direction based on position difference
+                        dx = x2 - x1
+                        dy = y2 - y1
 
-                    if abs(dx) > abs(dy):
-                        if dx > 0:
-                            direction = "Right"
+                        if abs(dx) > abs(dy):
+                            if dx > 0:
+                                direction = "Right"
+                            else:
+                                direction = "Left"
                         else:
-                            direction = "Left"
-                    else:
-                        if dy > 0:
-                            direction = "Down"
-                        else:
-                            direction = "Up"
+                            if dy > 0:
+                                direction = "Down"
+                            else:
+                                direction = "Up"
 
-                    # Check if speed_kmph is within the specified threshold
-                    if self.speed_threshold_min_kmph <= speed_kmph <= self.speed_threshold_max_kmph:
-                        # Draw speed information on the frame
-                        text = f"Vehicle {track_id}: Speed {speed_kmph:.2f} km/h"
-                        cv2.putText(annotated_frame, text, (int(x), int(y) - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)
+                        # Check if speed_kmph is within the specified threshold
+                        if self.speed_threshold_min_kmph <= speed_kmph <= self.speed_threshold_max_kmph:
+                            # Draw speed information on the frame
+                            text = f"Vehicle {track_id}: Speed {speed_kmph:.2f} km/h"
+                            cv2.putText(annotated_frame, text, (int(x), int(y) - 70), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1)
 
-                # Color estimation
-                roi = frame[int(y):int(y + h), int(x):int(x + w)]  # Define the ROI
-                if roi.size > 0:
-                    # Extract color samples (e.g., from the top of the ROI)
-                    color_samples = roi[0:10, :, :]
-                    # Calculate the average color
-                    avg_color = np.mean(color_samples, axis=(0, 1))
-                    # Assign a color label based on the average color
-                    color_label = self._assign_color(avg_color)
-                    # Crop the ROI and convert it to base64
-                    _, buffer = cv2.imencode('.jpg', roi)
-                    # Extract the license plate using OCR
-                    license_plate = self._get_license_plate(roi)
-                    roi_base64 = base64.b64encode(buffer).decode('utf-8')
+                    # Color estimation
+                    roi = frame[int(y):int(y + h), int(x):int(x + w)]  # Define the ROI
+                    if roi.size > 0:
+                        print(f"ROI detected, extract data")
+                        # Extract color samples (e.g., from the top of the ROI)
+                        color_samples = roi[0:10, :, :]
+                        # Calculate the average color
+                        avg_color = np.mean(color_samples, axis=(0, 1))
+                        # Assign a color label based on the average color
+                        color_label = self._assign_color(avg_color)
+                        # Crop the ROI and convert it to base64
+                        _, buffer = cv2.imencode('.jpg', roi)
+                        # Extract the license plate using OCR
+                        license_plate = self._get_license_plate(roi)
+                        roi_base64 = base64.b64encode(buffer).decode('utf-8')
 
-                if len(track) > 30:  # retain 30 tracks for 30 frames
-                    track.pop(0)
+                    if len(track) > 30:  # retain 30 tracks for 30 frames
+                        track.pop(0)
 
-                # Draw the tracking lines
-                points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
-                cv2.polylines(
-                    annotated_frame,
-                    [points],
-                    isClosed=False,
-                    color=(230, 230, 230),
-                    thickness=10,
-                )
+                    # Draw the tracking lines
+                    points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+                    cv2.polylines(
+                        annotated_frame,
+                        [points],
+                        isClosed=False,
+                        color=(230, 230, 230),
+                        thickness=10,
+                    )
 
                 processed_info.append({
                     'vehicle_id': track_id,
@@ -258,21 +270,24 @@ class VehicleTracker:
                     'license_plate': license_plate
                 })
 
-                logger.info(f"Processed Vehicle {track_id}:")
-                logger.info(f" - Speed: {speed_kmph:.2f} km/h")
-                logger.info(f" - Direction: {direction}")
-                logger.info(f" - Color: {color_label}")
-                logger.info(f" - License Plate: {license_plate}")
+                print(f"Processed Vehicle {track_id}:")
+                print(f" - Speed: {speed_kmph:.2f} km/h")
+                print(f" - Direction: {direction}")
+                print(f" - Color: {color_label}")
+                print(f" - License Plate: {license_plate}")
+                print(f" - Num Vehicles Detected: {num_vehicles_detected}")
 
             # Convert annotated frame to base64
-            logger.info("Frame processed successfully.")
+            print("Frame processed successfully.")
             return {
                 'processed_info': processed_info,
-                'frame_base64': self._convert_frame_to_base64(annotated_frame)
+                'frame_base64': self._convert_frame_to_base64(annotated_frame),
+                'num_vehicles_detected': num_vehicles_detected
             }
         else:
-            logger.info("No relevant objects detected in the frame.")
+            print("No relevant objects detected in the frame.")
             return {
                 'processed_info': [{'message': 'No relevant objects detected in the frame'}],
-                'frame_base64': self._convert_frame_to_base64(enhanced_frame)
+                'frame_base64': self._convert_frame_to_base64(enhanced_frame),
+                'num_vehicles_detected': 0
             }
