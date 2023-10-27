@@ -1,5 +1,5 @@
 from confluent_kafka import Consumer, KafkaError
-from VehicleDetectionTracker.VehicleTracker import VehicleTracker
+from VehicleDetection.VehicleDetection import VehicleDetection
 import json
 
 conf = {
@@ -12,7 +12,7 @@ topic = 'iot-camera-frames'
 consumer = Consumer(conf)
 consumer.subscribe([topic])
 
-tracker = VehicleTracker()
+vehicleDetection = VehicleDetection()
 
 while True:
     msg = consumer.poll(1.0)
@@ -34,10 +34,20 @@ while True:
         frame_data = payload.get('frame_data', '')
 
         # Process the frame with the tracker
-        results = tracker.process_frame_base64(frame_data)
-
+        results = vehicleDetection.process_frame_base64(frame_data)
+    
         # Optionally, you can access the MAC address and timestamp for further processing
         print(f"MAC Address: {mac_address}")
         print(f"Timestamp: {timestamp}")
+        print({
+            "number_of_vehicles_detected": results.get("number_of_vehicles_detected", 0),
+            "detected_vehicles": [
+                {
+                    key: vehicle.get(key, None)
+                    for key in ["vehicle_id", "vehicle_type", "detection_confidence"]
+                }
+                for vehicle in results.get('detected_vehicles', [])
+            ]
+        })
 
 consumer.close()
