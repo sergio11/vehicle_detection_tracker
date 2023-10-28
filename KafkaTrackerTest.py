@@ -1,5 +1,5 @@
 from confluent_kafka import Consumer, KafkaError
-from VehicleDetection.VehicleDetection import VehicleDetection
+from VehicleDetectionTracker.VehicleDetectionTracker import VehicleDetectionTracker
 import json
 
 conf = {
@@ -12,7 +12,7 @@ topic = 'iot-camera-frames'
 consumer = Consumer(conf)
 consumer.subscribe([topic])
 
-vehicleDetection = VehicleDetection()
+vehicleDetection = VehicleDetectionTracker()
 
 while True:
     msg = consumer.poll(1.0)

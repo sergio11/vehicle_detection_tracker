@@ -17,7 +17,6 @@ Whether you're working on traffic management, video analysis, or machine learnin
 ## Features 🌟
 
 - Efficient vehicle detection and tracking in images and videos.
-- Speed measurement for tracked vehicles.
 - Vehicle color estimation.
 - Direction of vehicle movement detection.
 - Easy integration into your computer vision projects.
@@ -33,22 +32,22 @@ pip install VehicleDetectionTracker
 ## Usage 📷
 
 ```python
-from VehicleDetectionTracker.VehicleTracker import VehicleTracker
-import cv2
+from VehicleDetectionTracker.VehicleDetectionTracker import VehicleDetectionTracker
 
-# Create a VehicleDetectionTracker instance
-tracker = VehicleTracker()
-
-# Process a frame
-frame = cv2.imread('your_frame.jpg')
-result = tracker.process_frame(frame)
-
-# Access processed information
-if result:
-    processed_info = result['processed_info']
-    annotated_frame_base64 = result['frame_base64']
-    # Your custom processing logic here
-
+video_path = "[[YOUR_VIDEO_STREAM_URL]]"
+vehicle_detection = VehicleDetectionTracker()
+result_callback = lambda result: print({
+    "number_of_vehicles_detected": result["number_of_vehicles_detected"],
+    "detected_vehicles": [
+        {
+            "vehicle_id": vehicle["vehicle_id"],
+            "vehicle_type": vehicle["vehicle_type"],
+            "detection_confidence": vehicle["detection_confidence"]
+        }
+        for vehicle in result['detected_vehicles']
+    ]
+})
+vehicle_detection.process_video(video_path, result_callback)
 ```
 
 ## Documentation 📚
