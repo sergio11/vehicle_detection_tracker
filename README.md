@@ -3,8 +3,8 @@
 Effortlessly track and detect vehicles in images and videos using state-of-the-art YOLO object detection and tracking, powered by Ultralytics. Boost your computer vision project with the VehicleDetectionTracker, a versatile Python package that simplifies vehicle tracking and detection in a variety of applications. 🚙🚕
 
 - Detect vehicles in real-time or from pre-recorded videos.
-- Accurately track vehicles' positions, speeds, and directions.
-- Enjoy flexibility with customizable speed thresholds and color recognition.
+- Accurately track vehicles' positions.
+- Brand and color classification. The classifiers are based on MobileNet v3 (Alibaba MNN backend).
 - Empower traffic analysis, automated surveillance, and more.
 - Harness the capabilities of YOLO for precise object detection.
 
@@ -18,7 +18,6 @@ Whether you're working on traffic management, video analysis, or machine learnin
 
 - Efficient vehicle detection and tracking in images and videos.
 - Vehicle color estimation.
-- Direction of vehicle movement detection.
 - Easy integration into your computer vision projects.
 
 ## Installation 🚀
@@ -31,13 +30,19 @@ pip install VehicleDetectionTracker
 
 ## Usage 📷
 
+You can quickly get started with VehicleDetectionTracker to detect and track vehicles in images and videos. Below are two usage examples, each tailored to different scenarios:
+
+### Example 1: Real-Time Video Stream (OpenCV)
+
+This example demonstrates how to use VehicleDetectionTracker to process a real-time video stream using OpenCV. Simply provide the URL of the video stream to get started:
+
 ```python
 from VehicleDetectionTracker.VehicleDetectionTracker import VehicleDetectionTracker
 
 video_path = "[[YOUR_VIDEO_STREAM_URL]]"
 vehicle_detection = VehicleDetectionTracker()
 result_callback = lambda result: print({
-    "number_of_vehicles_detected": result["number_of_vehicles_detected"],
+    "number_of vehicles_detected": result["number_of_vehicles_detected"],
     "detected_vehicles": [
         {
             "vehicle_id": vehicle["vehicle_id"],
@@ -49,6 +54,68 @@ result_callback = lambda result: print({
 })
 vehicle_detection.process_video(video_path, result_callback)
 ```
+
+###  Example 2: Kafka Topic Processing
+
+For more advanced use cases, VehicleDetectionTracker can also be integrated with Apache Kafka for processing video frame by frame:
+
+```python
+from confluent_kafka import Consumer, KafkaError
+from VehicleDetectionTracker.VehicleDetectionTracker import VehicleDetectionTracker
+import json
+
+conf = {
+    'bootstrap.servers': '192.168.1.39:9092"',  # Configure this to your Kafka broker's address.
+    'group.id': 'my-group',
+    'auto.offset.reset': 'earliest'
+}
+
+topic = 'iot-camera-frames'
+consumer = Consumer(conf)
+consumer.subscribe([topic])
+
+vehicleDetection = VehicleDetectionTracker()
+
+while True:
+    msg = consumer.poll(1.0)
+
+    if msg is None:
+        continue
+    if msg.error():
+        if msg.error().code() == KafkaError._PARTITION_EOF:
+            print('End of partition, message read: {} [{}] at offset {}'.format(
+                msg.key(), msg.partition(), msg.offset()))
+        else:
+            print('Kafka error: {}'.format(msg.error()))
+    else:
+        # Process the message (a frame) received from Kafka
+        payload = json.loads(msg.value())
+        
+        mac_address = payload.get('mac_address', '')
+        timestamp = payload.get('timestamp', '')
+        frame_data = payload.get('frame_data', '')
+
+        # Process the frame with the tracker
+        results = vehicleDetection.process_frame_base64(frame_data)
+    
+        # Optionally, you can access the MAC address and timestamp for further processing
+        print(f"MAC Address: {mac_address}")
+        print(f"Timestamp: {timestamp}")
+        print({
+            "number_of_vehicles_detected": results.get("number_of_vehicles_detected", 0),
+            "detected_vehicles": [
+                {
+                    key: vehicle.get(key, None)
+                    for key in ["vehicle_id", "vehicle_type", "detection_confidence"]
+                }
+                for vehicle in results.get('detected_vehicles', [])
+            ]
+        })
+
+consumer.close()
+```
+
+These examples showcase the flexibility of VehicleDetectionTracker and its ability to adapt to various real-world scenarios. Explore the repository's documentation and examples for more in-depth guidance.
 
 ## Documentation 📚
 
