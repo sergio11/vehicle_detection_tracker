@@ -121,8 +121,8 @@ These examples showcase the flexibility of VehicleDetectionTracker and its abili
 
 **Screenshots:** Here are some screenshots that demonstrate the functionality of VehicleDetectionTracker:
 
-| [Screenshot 1](screenshots/screenshot_1.PNG) | [Screenshot 2](screenshots/screenshot_2.PNG) | [Screenshot 3](screenshots/screenshot_3.PNG) |
-| [Screenshot 4](screenshots/screenshot_4.PNG) | [Screenshot 5](screenshots/screenshot_5.PNG) | [Screenshot 6](screenshots/screenshot_6.PNG) |
+| ![Screenshot 1](screenshots/screenshot_1.PNG) | ![Screenshot 2](screenshots/screenshot_2.PNG) | ![Screenshot 3](screenshots/screenshot_3.PNG) |
+| ![Screenshot 4](screenshots/screenshot_4.PNG) | ![Screenshot 5](screenshots/screenshot_5.PNG) | ![Screenshot 6](screenshots/screenshot_6.PNG) |
 
 
 ## Documentation 📚
