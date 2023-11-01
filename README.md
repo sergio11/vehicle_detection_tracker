@@ -39,7 +39,7 @@ This example demonstrates how to use VehicleDetectionTracker to process a real-t
 ```python
 from VehicleDetectionTracker.VehicleDetectionTracker import VehicleDetectionTracker
 
-video_path = "https://35-d2.divas.cloud/CHAN-9477/CHAN-9477_1.stream/playlist.m3u8?83.52.13.30&vdswztokenhash=cTjnsyM47fJ9KyC59bhtuWTbZFVLpfY19HVPg9kIdJM="
+video_path = "[[YOUR_STREAMING_SOURCE]]"
 vehicle_detection = VehicleDetectionTracker()
 result_callback = lambda result: print({
     "number_of_vehicles_detected": result["number_of_vehicles_detected"],
@@ -119,11 +119,14 @@ consumer.close()
 
 These examples showcase the flexibility of VehicleDetectionTracker and its ability to adapt to various real-world scenarios. Explore the repository's documentation and examples for more in-depth guidance.
 
-**Screenshots:** Here are some screenshots that demonstrate the functionality of VehicleDetectionTracker:
+### **Screenshots:** Here are some screenshots that demonstrate the functionality of VehicleDetectionTracker:
 
-| ![Screenshot 1](screenshots/screenshot_1.PNG) | ![Screenshot 2](screenshots/screenshot_2.PNG) | ![Screenshot 3](screenshots/screenshot_3.PNG) |
-| ![Screenshot 4](screenshots/screenshot_4.PNG) | ![Screenshot 5](screenshots/screenshot_5.PNG) | ![Screenshot 6](screenshots/screenshot_6.PNG) |
-
+![Screenshot 1](screenshots/screenshot_1.PNG) 
+![Screenshot 2](screenshots/screenshot_2.PNG)
+![Screenshot 3](screenshots/screenshot_3.PNG)
+![Screenshot 4](screenshots/screenshot_4.PNG)
+![Screenshot 5](screenshots/screenshot_5.PNG)
+![Screenshot 6](screenshots/screenshot_6.PNG)
 
 ## Documentation 📚
 
