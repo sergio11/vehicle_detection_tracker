@@ -1,4 +1,4 @@
-# VehicleDetectionTracker 🚗
+# 🚗 VehicleDetectionTracker: Real-time vehicle detection and tracking powered by YOLO. 🚙🚕
 
 Effortlessly track and detect vehicles in images and videos using state-of-the-art YOLO object detection and tracking, powered by Ultralytics. Boost your computer vision project with the VehicleDetectionTracker, a versatile Python package that simplifies vehicle tracking and detection in a variety of applications. 🚙🚕
 
