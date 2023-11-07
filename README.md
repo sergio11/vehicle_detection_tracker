@@ -69,7 +69,7 @@ In summary, vehicle detection involves using a deep learning model to identify v
 
 ## Explanation of Detection Results JSON.
 
-```json
+```
 0: 384x640 1 car, 171.0ms
 Speed: 5.0ms preprocess, 171.0ms inference, 2.0ms postprocess per image at shape (1, 3, 384, 640)
 
