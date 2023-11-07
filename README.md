@@ -187,18 +187,22 @@ consumer.close()
 
 These examples showcase the flexibility of VehicleDetectionTracker and its ability to adapt to various real-world scenarios. Explore the repository's documentation and examples for more in-depth guidance.
 
-### **Screenshots:** Here are some screenshots that demonstrate the functionality of VehicleDetectionTracker:
+### Screenshots 📷
 
-![Screenshot 1](screenshots/screenshot_1.PNG) 
-![Screenshot 2](screenshots/screenshot_2.PNG)
-![Screenshot 3](screenshots/screenshot_3.PNG)
-![Screenshot 4](screenshots/screenshot_4.PNG)
-![Screenshot 5](screenshots/screenshot_5.PNG)
-![Screenshot 6](screenshots/screenshot_6.PNG)
+Here are some screenshots that demonstrate the functionality of VehicleDetectionTracker:
 
-## Documentation 📚
+| Screenshot 1 | Screenshot 2 |
+|-------------- |-------------- |
+| ![Screenshot 1](screenshots/screenshot_1.PNG) | ![Screenshot 2](screenshots/screenshot_2.PNG) |
 
-Detailed documentation and examples are available on the [GitHub repository](https://github.com/sergio11/vehicle_detection_tracker).
+| Screenshot 3 | Screenshot 4 |
+|-------------- |-------------- |
+| ![Screenshot 3](screenshots/screenshot_3.PNG) | ![Screenshot 4](screenshots/screenshot_4.PNG) |
+
+| Screenshot 5 | Screenshot 6 |
+|-------------- |-------------- |
+| ![Screenshot 5](screenshots/screenshot_5.PNG) | ![Screenshot 6](screenshots/screenshot_6.PNG) |
+
 
 ## License 📜
 
