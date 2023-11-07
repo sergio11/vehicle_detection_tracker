@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='VehicleDetectionTracker',  
-    version='0.0.22',
+    version='0.0.23',
     packages=find_packages(),
     install_requires=[
         'opencv-python==4.8.1.78',
@@ -38,7 +38,7 @@ This setup script configures the installation of the VehicleDetectionTracker pac
 
 Project Details:
 - Name: VehicleDetectionTracker
-- Version: 0.0.22
+- Version: 0.0.23
 - Author: Sergio Sánchez Sánchez
 - Email: dreamsoftware92@gmail.com
 - Description: VehicleDetectionTracker is a package that enables effortless tracking and detection of vehicles in images and videos using advanced algorithms. Ideal for enhancing your computer vision project with vehicle recognition and tracking.
