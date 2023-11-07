@@ -17,6 +17,8 @@ Whether you're working on traffic management, video analysis, or machine learnin
 ## Features 🌟
 
 - Efficient vehicle detection and tracking in images and videos.
+- Accurate vehicle speed estimation in kilometers per hour (KM/H).
+- Precise determination of the direction of each detected vehicle.
 - Vehicle color estimation.
 - Easy integration into your computer vision projects.
 
