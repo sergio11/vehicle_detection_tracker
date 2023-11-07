@@ -222,12 +222,16 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 ## Acknowledgments 🙏
 
-- This package is powered by [YOLO](https://github.com/ultralytics/yolov5) for object detection.
+- This package is powered by [ultralytics YOLO](https://github.com/ultralytics/ultralytics) for object detection.
 - Special thanks to the open-source community for their contributions.
+
+## Contribution
+
+Contributions to VehicleDetectionTracker are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
 
 ## Get in Touch 📬
 
-If you have any questions, feedback, or suggestions, feel free to reach out at [dreamsoftware92@gmail.com](mailto:dreamsoftware92@gmail.com).
+VehicleDetectionTracker is developed and maintained by **Sergio Sánchez Sánchez** (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at  [dreamsoftware92@gmail.com](mailto:dreamsoftware92@gmail.com).
 
 ## Happy Tracking! 🚀👁️
 
