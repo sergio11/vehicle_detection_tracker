@@ -2,11 +2,11 @@
 
 Effortlessly track and detect vehicles in images and videos using state-of-the-art YOLO object detection and tracking, powered by Ultralytics. Boost your computer vision project with the VehicleDetectionTracker, a versatile Python package that simplifies vehicle tracking and detection in a variety of applications. 🚙🚕
 
-👀 Detect vehicles in real-time or from pre-recorded videos.
-📍 Accurately track vehicles' positions.
-🎨 Brand and color classification. The classifiers are based on MobileNet v3 (Alibaba MNN backend).
-🚀 Empower traffic analysis, automated surveillance, and more.
-🔍 Harness the capabilities of YOLO for precise object detection.
+- 👀 Detect vehicles in real-time or from pre-recorded videos.
+- 📍 Accurately track vehicles' positions.
+- 🎨 Brand and color classification. The classifiers are based on MobileNet v3 (Alibaba MNN backend).
+- 🚀 Empower traffic analysis, automated surveillance, and more.
+- 🔍 Harness the capabilities of YOLO for precise object detection.
 
 Whether you're working on traffic management, video analysis, or machine learning projects, the VehicleDetectionTracker provides the tools you need to enhance your results. Explore detailed documentation and examples on the repository, and get started with vehicle tracking in no time! 📚🚗
 
