@@ -211,9 +211,9 @@ Here are some screenshots that demonstrate the functionality of VehicleDetection
 |-------------- |-------------- |
 | ![Screenshot 7](screenshots/screenshot_9.PNG) | ![Screenshot 6](screenshots/screenshot_10.PNG) |
 
-| Screenshot 11 | Screenshot 11 |
+| Screenshot 11 | Screenshot 12 |
 |-------------- |-------------- |
-| ![Screenshot 7](screenshots/screenshot_11.PNG) | ![Screenshot 6](screenshots/screenshot_11.PNG) |
+| ![Screenshot 7](screenshots/screenshot_11.PNG) | ![Screenshot 6](screenshots/screenshot_12.PNG) |
 
 
 ## License 📜
