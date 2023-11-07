@@ -116,7 +116,8 @@ result_callback = lambda result: print({
             "vehicle_type": vehicle["vehicle_type"],
             "detection_confidence": vehicle["detection_confidence"],
             "color_info": vehicle["color_info"],
-            "model_info": vehicle["model_info"]
+            "model_info": vehicle["model_info"],
+            "speed_info": vehicle["speed_info"]
         }
         for vehicle in result['detected_vehicles']
     ]
