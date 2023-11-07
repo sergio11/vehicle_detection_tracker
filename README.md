@@ -237,3 +237,12 @@ VehicleDetectionTracker is developed and maintained by **Sergio Sánchez Sánche
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
 [![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
+
+## Visitors Count
+
+<img width="auto" src="https://profile-counter.glitch.me/vehicle_detection_tracker/count.svg" />
+
+## Please Share & Star the repository to keep me motivated.
+  <a href = "https://github.com/sergio11/vehicle_detection_tracker/stargazers">
+     <img src = "https://img.shields.io/github/stars/sergio11/vehicle_detection_tracker" />
+  </a>
