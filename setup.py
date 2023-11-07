@@ -5,11 +5,10 @@ setup(
     version='0.0.22',
     packages=find_packages(),
     install_requires=[
-        'opencv-python-headless==4.8.1.78',
+        'opencv-python==4.8.1.78',
         'imutils==0.5.4',
-        'numpy==1.22.0',
+        'numpy==1.23.5',
         'ultralytics==8.0.145',
-        'lap==0.4.0',
         'pytesseract'
     ],
     author='Sergio Sánchez Sánchez',

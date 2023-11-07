@@ -91,9 +91,30 @@ class VehicleDetectionTracker:
         return scale_x, scale_y
 
     def _calculate_fov(self, sensor_size_mm, focal_length_mm):
+        """
+        Calculate the field of view (FOV) in degrees based on the sensor size and focal length.
+
+        Args:
+            sensor_size_mm (float): Size of the camera sensor in millimeters.
+            focal_length_mm (float): Focal length of the camera lens in millimeters.
+
+        Returns:
+            float: The calculated FOV in degrees.
+        """
         return 2 * math.degrees(math.atan(sensor_size_mm / (2 * focal_length_mm)))
 
     def _convert_pixels_to_meters(self, pixels_per_second, scale_x, scale_y):
+        """
+        Convert pixel-based speed to meters per second using the provided scaling factors.
+
+        Args:
+            pixels_per_second (float): Speed in pixels per second.
+            scale_x (float): Scaling factor for the x-axis (meters per pixel).
+            scale_y (float): Scaling factor for the y-axis (meters per pixel).
+
+        Returns:
+            tuple: A tuple containing two values - meters per second along the x-axis and y-axis, respectively.
+        """
         meters_per_second_x = pixels_per_second * scale_x
         meters_per_second_y = pixels_per_second * scale_y
         return meters_per_second_x, meters_per_second_y
@@ -141,14 +162,20 @@ class VehicleDetectionTracker:
         # Process a single video frame and return detection results, an annotated frame, and the original frame as base64.
         results = self.model.track(self._increase_brightness(frame), persist=True, tracker="bytetrack.yaml")  # Perform vehicle tracking in the frame
         if results is not None and results[0] is not None and results[0].boxes is not None and results[0].boxes.id is not None:
+            # Obtain bounding boxes (xywh format) of detected objects
             boxes = results[0].boxes.xywh.cpu()
+            # Extract confidence scores for each detected object
             conf_list = results[0].boxes.conf.cpu()
+            # Get unique IDs assigned to each tracked object
             track_ids = results[0].boxes.id.int().cpu().tolist()
+            # Obtain the class labels (e.g., 'car', 'truck') for detected objects
             clss = results[0].boxes.cls.cpu().tolist()
+            # Retrieve the names of the detected objects based on class labels
             names = results[0].names
             # Get the annotated frame using results[0].plot() and encode it as base64
             annotated_frame = results[0].plot()
-            fov_degress = self._calculate_fov(sensor_size_mm, focal_length_mm)
+            # Calculate the Field of View (FOV) in degrees based on sensor size and focal length
+            fov_degrees = self._calculate_fov(sensor_size_mm, focal_length_mm)
 
             for box, track_id, cls, conf in zip(boxes, track_ids, clss, conf_list):
                 x, y, w, h = box
@@ -156,12 +183,19 @@ class VehicleDetectionTracker:
                 # Bounding box plot
                 bbox_color = colors(cls, True)
                 track_thickness=2
-                # Tracking Lines plot
+                if track_id not in self.track_history:
+                    self.track_history[track_id] = []
+                # Retrieve or create a list to store the tracking history of the current vehicle (identified by track_id).
                 track = self.track_history[track_id]
+                # Append the current position (x, y) to the tracking history list.
                 track.append((float(x), float(y)))
-                if len(track) > 30:
+                # Limit the tracking history to the last 30 positions to avoid excessive memory usage.
+                max_history_length = 30
+                if len(track) > max_history_length:
                     track.pop(0)
+                # Combine the tracked points into a NumPy array for drawing a polyline.
                 points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
+                # Draw a polyline (tracking lines) on the annotated frame using the combined points.
                 cv2.polylines(annotated_frame, [points], isClosed=False, color=bbox_color, thickness=track_thickness)
 
                 if track_id not in self.vehicle_timestamps:
@@ -186,7 +220,7 @@ class VehicleDetectionTracker:
                         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
                         # Calculate speed in pixels per second
                         speed_pxs_per_sec = distance / delta_t_seconds
-                        scale_x, scale_y = self._calculate_scale(fov_degress, frame)
+                        scale_x, scale_y = self._calculate_scale(fov_degrees, frame)
                         print(f'Scale in meters per pixel: ({scale_x}, {scale_y})')
                         speed_ms = self._convert_pixels_to_meters(speed_pxs_per_sec, scale_x, scale_y)
                         speed_kph = self._convert_meters_per_second_to_kmph(speed_ms)
@@ -208,7 +242,12 @@ class VehicleDetectionTracker:
                     "vehicle_id": track_id,
                     "vehicle_type": label,
                     "detection_confidence": conf.item(),
-                    "vehicle_coordinates": {"x": x.item(), "y": y.item(), "width": w.item(), "height": h.item()},
+                    "vehicle_coordinates": {
+                        "x": x.item(),
+                        "y": y.item(), 
+                        "width": w.item(), 
+                        "height": h.item()
+                    },
                     "vehicle_frame_base64": vehicle_frame_base64,
                     "color_info": color_info_json,
                     "model_info": model_info_json,
