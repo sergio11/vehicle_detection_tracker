@@ -27,6 +27,24 @@ class VehicleDetectionTracker:
         self.model_classifier = ModelClassifier()
         self.vehicle_timestamps = defaultdict(list)  # Keep track of timestamps for each tracked vehicle
 
+    def _map_direction_to_label(self, direction):
+        # Define direction ranges in radians and their corresponding labels
+        direction_ranges = {
+            (-math.pi / 8, math.pi / 8): "Right",
+            (math.pi / 8, 3 * math.pi / 8): "Bottom Right",
+            (3 * math.pi / 8, 5 * math.pi / 8): "Bottom",
+            (5 * math.pi / 8, 7 * math.pi / 8): "Bottom Left",
+            (7 * math.pi / 8, -7 * math.pi / 8): "Left",
+            (-7 * math.pi / 8, -5 * math.pi / 8): "Top Left",
+            (-5 * math.pi / 8, -3 * math.pi / 8): "Top",
+            (-3 * math.pi / 8, -math.pi / 8): "Top Right"
+        }
+        for angle_range, label in direction_ranges.items():
+            if angle_range[0] <= direction <= angle_range[1]:
+                return label
+        return "Unknown"  # Return "Unknown" if the direction doesn't match any defined range
+
+
     def _encode_image_base64(self, image):
         """
         Encode an image as base64.
@@ -69,62 +87,13 @@ class VehicleDetectionTracker:
         """
         brightened_image = cv2.convertScaleAbs(image, alpha=factor, beta=0)
         return brightened_image
-    
-    def _calculate_scale(self, fov, frame):
-        # These values can be obtained dynamically from the frame
-        image_width = frame.shape[1]  # Width of the frame
-        image_height = frame.shape[0]  # Height of the frame
-        # FOV is given in degrees, we convert it to radians.
-        fov_rad = math.radians(fov)
-        
-        print(f'Image width: {image_width} pixels')
-        print(f'Image height: {image_height} pixels')
-        # Calculate the visible width and height at the focal distance.
-        focal_distance = (image_width / 2) / math.tan(fov_rad / 2)
-        visible_width = 2 * focal_distance * math.tan(fov_rad / 2)
-        visible_height = 2 * focal_distance * math.tan(fov_rad / 2)
-        
-        # Calculate the scale in meters per pixel.
-        scale_x = visible_width / image_width
-        scale_y = visible_height / image_height
-        
-        return scale_x, scale_y
-
-    def _calculate_fov(self, sensor_size_mm, focal_length_mm):
-        """
-        Calculate the field of view (FOV) in degrees based on the sensor size and focal length.
-
-        Args:
-            sensor_size_mm (float): Size of the camera sensor in millimeters.
-            focal_length_mm (float): Focal length of the camera lens in millimeters.
-
-        Returns:
-            float: The calculated FOV in degrees.
-        """
-        return 2 * math.degrees(math.atan(sensor_size_mm / (2 * focal_length_mm)))
-
-    def _convert_pixels_to_meters(self, pixels_per_second, scale_x, scale_y):
-        """
-        Convert pixel-based speed to meters per second using the provided scaling factors.
-
-        Args:
-            pixels_per_second (float): Speed in pixels per second.
-            scale_x (float): Scaling factor for the x-axis (meters per pixel).
-            scale_y (float): Scaling factor for the y-axis (meters per pixel).
-
-        Returns:
-            tuple: A tuple containing two values - meters per second along the x-axis and y-axis, respectively.
-        """
-        meters_per_second_x = pixels_per_second * scale_x
-        meters_per_second_y = pixels_per_second * scale_y
-        return meters_per_second_x, meters_per_second_y
 
     def _convert_meters_per_second_to_kmph(self, meters_per_second):
         # 1 m/s is approximately 3.6 km/h
-        kmph = math.sqrt(meters_per_second[0] ** 2 + meters_per_second[1] ** 2) * 3.6
+        kmph = meters_per_second * 3.6
         return kmph
 
-    def process_frame_base64(self, frame_base64, focal_length_mm, sensor_size_mm, frame_timestamp):
+    def process_frame_base64(self, frame_base64, frame_timestamp):
         """
         Process a base64-encoded frame to detect and track vehicles.
 
@@ -137,13 +106,13 @@ class VehicleDetectionTracker:
         """
         frame = self._decode_image_base64(frame_base64)
         if frame is not None:
-            return self.process_frame(frame, focal_length_mm, sensor_size_mm, frame_timestamp)
+            return self.process_frame(frame, frame_timestamp)
         else:
             return {
                 "error": "Failed to decode the base64 image"
             }
 
-    def process_frame(self, frame, focal_length_mm, sensor_size_mm, frame_timestamp):
+    def process_frame(self, frame, frame_timestamp):
         """
         Process a single video frame to detect and track vehicles.
 
@@ -174,8 +143,6 @@ class VehicleDetectionTracker:
             names = results[0].names
             # Get the annotated frame using results[0].plot() and encode it as base64
             annotated_frame = results[0].plot()
-            # Calculate the Field of View (FOV) in degrees based on sensor size and focal length
-            fov_degrees = self._calculate_fov(sensor_size_mm, focal_length_mm)
 
             for box, track_id, cls, conf in zip(boxes, track_ids, clss, conf_list):
                 x, y, w, h = box
@@ -204,26 +171,49 @@ class VehicleDetectionTracker:
                 # Store the timestamp for this frame
                 self.vehicle_timestamps[track_id]["timestamps"].append(frame_timestamp)
                 self.vehicle_timestamps[track_id]["positions"].append((x, y))
-
                 # Calculate the speed if there are enough timestamps (at least 2)
                 timestamps = self.vehicle_timestamps[track_id]["timestamps"]
                 positions = self.vehicle_timestamps[track_id]["positions"]
                 speed_kph = None
+                reliability = 0.0
+                direction_label = None
+                direction = None
                 if len(timestamps) >= 2:
-                    t1, t2 = timestamps[-2], timestamps[-1]  # Get the last two timestamps
-                    delta_t = (t2 - t1)  # Time elapsed in seconds
-                    delta_t_seconds = delta_t.total_seconds()
-                    if delta_t_seconds > 0:
-                        # Calculate distance traveled between the two frames
-                        x1, y1 = positions[-2]
-                        x2, y2 = positions[-1]
-                        distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
-                        # Calculate speed in pixels per second
-                        speed_pxs_per_sec = distance / delta_t_seconds
-                        scale_x, scale_y = self._calculate_scale(fov_degrees, frame)
-                        print(f'Scale in meters per pixel: ({scale_x}, {scale_y})')
-                        speed_ms = self._convert_pixels_to_meters(speed_pxs_per_sec, scale_x, scale_y)
-                        speed_kph = self._convert_meters_per_second_to_kmph(speed_ms)
+                    delta_t_list = []
+                    distance_list = []
+                    # Calculate time intervals (delta_t) and distances traveled between successive frames
+                    for i in range(1, len(timestamps)):
+                        t1, t2 = timestamps[i - 1], timestamps[i]
+                        delta_t = (t2 - t1).total_seconds()
+                        if delta_t > 0:
+                            x1, y1 = positions[i - 1]
+                            x2, y2 = positions[i]
+                            distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+                            delta_t_list.append(delta_t)
+                            distance_list.append(distance)
+
+                    
+                    # Calculate speeds in meters per second (mps) for each frame and then average them
+                    speeds = [distance / delta_t for distance, delta_t in zip(distance_list, delta_t_list)]
+                    avg_speed_mps = sum(speeds) / len(speeds)
+
+                    # Convert the average speed from meters per second (mps) to kilometers per hour (kph)
+                    speed_kph = self._convert_meters_per_second_to_kmph(avg_speed_mps)
+
+                    # Calculate the direction based on the change in position between the first and last frame
+                    initial_x, initial_y = positions[0]
+                    final_x, final_y = positions[-1]
+                    direction = math.atan2(final_y - initial_y, final_x - initial_x)
+                    direction_label = self._map_direction_to_label(direction)
+
+                    # Calculate reliability based on the number of samples used
+                    if len(timestamps) < 5:
+                        reliability = 0.5  # Low reliability if there are less than 5 samples
+                    elif len(timestamps) < 10:
+                        reliability = 0.7  # Moderate reliability if there are between 5 and 10 samples
+                    else:
+                        reliability = 1.0  # High reliability if there are 10 or more samples
+
 
                 # If the vehicle is new, process it
                 self.detected_vehicles.add(track_id)  # Add the vehicle to the set of detected vehicles
@@ -251,7 +241,12 @@ class VehicleDetectionTracker:
                     "vehicle_frame_base64": vehicle_frame_base64,
                     "color_info": color_info_json,
                     "model_info": model_info_json,
-                    "speed_kph": speed_kph
+                    "speed_info": {
+                        "kph": speed_kph, 
+                        "reliability": reliability,
+                        "direction_label": direction_label,
+                        "direction": direction
+                    }
                 })
                     
             annotated_frame_base64 = self._encode_image_base64(annotated_frame)
@@ -263,7 +258,7 @@ class VehicleDetectionTracker:
 
         return response
 
-    def process_video(self, video_path, result_callback, focal_length_mm, sensor_size_mm):
+    def process_video(self, video_path, result_callback):
         """
         Process a video by calling a callback for each frame's results.
 
@@ -280,7 +275,7 @@ class VehicleDetectionTracker:
                 frame_rate = int(cap.get(cv2.CAP_PROP_FPS))
                 print(f"Frame rate: {frame_rate} FPS")
                 timestamp = datetime.now()
-                response = self.process_frame(frame, focal_length_mm, sensor_size_mm, timestamp)
+                response = self.process_frame(frame, timestamp)
                 if 'annotated_frame_base64' in response:
                     annotated_frame = self._decode_image_base64(response['annotated_frame_base64'])
                     if annotated_frame is not None:
