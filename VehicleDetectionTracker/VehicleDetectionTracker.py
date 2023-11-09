@@ -23,9 +23,16 @@ class VehicleDetectionTracker:
         self.model = YOLO(model_path)
         self.track_history = defaultdict(lambda: [])  # History of vehicle tracking
         self.detected_vehicles = set()  # Set of detected vehicles
-        self.color_classifier = ColorClassifier()
-        self.model_classifier = ModelClassifier()
+        self.color_classifier = None
+        self.model_classifier = None
         self.vehicle_timestamps = defaultdict(list)  # Keep track of timestamps for each tracked vehicle
+
+
+    def _initialize_classifiers(self):
+        if self.color_classifier is None:
+            self.color_classifier = ColorClassifier()
+        if self.model_classifier is None:
+            self.model_classifier = ModelClassifier()
 
     def _map_direction_to_label(self, direction):
         # Define direction ranges in radians and their corresponding labels
@@ -122,6 +129,7 @@ class VehicleDetectionTracker:
         Returns:
             dict: Processed information including tracked vehicles' details, the annotated frame in base64, and the original frame in base64.
         """
+        self._initialize_classifiers()
         response = {
             "number_of_vehicles_detected": 0,  # Counter for vehicles detected in this frame
             "detected_vehicles": [],  # List of information about detected vehicles

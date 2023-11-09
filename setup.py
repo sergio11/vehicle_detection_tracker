@@ -2,14 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='VehicleDetectionTracker',  
-    version='0.0.23',
+    version='0.0.29',
     packages=find_packages(),
+    include_package_data=True,
+    package_data={'VehicleDetectionTracker': ['data/*']},
     install_requires=[
         'opencv-python==4.8.1.78',
         'imutils==0.5.4',
-        'numpy==1.23.5',
         'ultralytics==8.0.145',
-        'pytesseract'
+        'tensorflow==2.14.0'
     ],
     author='Sergio Sánchez Sánchez',
     author_email='dreamsoftware92@gmail.com',
@@ -38,7 +39,7 @@ This setup script configures the installation of the VehicleDetectionTracker pac
 
 Project Details:
 - Name: VehicleDetectionTracker
-- Version: 0.0.23
+- Version: 0.0.29
 - Author: Sergio Sánchez Sánchez
 - Email: dreamsoftware92@gmail.com
 - Description: VehicleDetectionTracker is a package that enables effortless tracking and detection of vehicles in images and videos using advanced algorithms. Ideal for enhancing your computer vision project with vehicle recognition and tracking.
@@ -48,7 +49,6 @@ Project Details:
 Requirements:
 - opencv-python-headless 4.8.1.78
 - imutils 0.5.4
-- numpy 1.22.0
 - ultralytics 8.0.145
 
 Development Status: Beta

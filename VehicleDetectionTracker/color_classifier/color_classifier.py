@@ -2,12 +2,8 @@
 # Licensed under the MIT License
 
 import numpy as np
-import json
 import tensorflow.compat.v1 as tf
-from PIL import Image, ImageOps
 import cv2
-import io
-import os
 import VehicleDetectionTracker.color_classifier.config as config
 
 model_file = config.model_file
@@ -19,10 +15,6 @@ classifier_input_size = config.classifier_input_size
 def load_graph(model_file):
     graph = tf.Graph()
     graph_def = tf.GraphDef()
-    # Imprime el valor de model_file
-    print("Model File:", model_file)
-    model_file_abs = os.path.abspath(model_file)
-    print("Ruta absoluta del archivo de modelo:", model_file_abs)
     with open(model_file, "rb") as f:
         graph_def.ParseFromString(f.read())
     with graph.as_default():
@@ -78,12 +70,20 @@ def resizeAndPad(img, size, padColor=0):
     return scaled_img
 
 class Classifier():
+
     def __init__(self):
         # uncomment the next 3 lines if you want to use CPU instead of GPU
         import os
         os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+        self.graph = None
+        self.labels = None
+        self.input_operation = None
+        self.output_operation = None
+        self.sess = None
+
+    def initialize(self):
         self.graph = load_graph(model_file)
         self.labels = load_labels(label_file)
 
@@ -93,9 +93,13 @@ class Classifier():
         self.output_operation = self.graph.get_operation_by_name(output_name)
 
         self.sess = tf.Session(graph=self.graph)
-        self.sess.graph.finalize()  # Graph is read-only after this statement.
+        self.sess.graph.finalize()  # Graph is read-only after this statement.   
+    
 
     def predict(self, img):
+        if self.graph is None or self.labels is None:
+            self.initialize()
+            
         img = img[:, :, ::-1]
         img = resizeAndPad(img, classifier_input_size)
 

@@ -74,10 +74,17 @@ def resizeAndPad(img, size, padColor=0):
 class Classifier():
     def __init__(self):
         # uncomment the next 3 lines if you want to use CPU instead of GPU
-        #import os
-        #os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-        #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+        import os
+        os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
+        self.graph = None
+        self.labels = None
+        self.input_operation = None
+        self.output_operation = None
+        self.sess = None
+
+    def initialize(self):
         self.graph = load_graph(model_file)
         self.labels = load_labels(label_file)
 
@@ -90,6 +97,9 @@ class Classifier():
         self.sess.graph.finalize()  # Graph is read-only after this statement.
 
     def predict(self, img):
+        if self.graph is None or self.labels is None:
+            self.initialize()
+
         img = img[:, :, ::-1]
         img = resizeAndPad(img, classifier_input_size)
 
@@ -112,4 +122,4 @@ class Classifier():
         for ix in top_indices:
             make_model = self.labels[ix].split('\t')
             classes.append({"make": make_model[0], "model": make_model[1], "prob": str(results[ix])})
-        return(classes)
+        return classes
