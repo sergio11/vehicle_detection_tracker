@@ -39,15 +39,20 @@ while True:
         # Optionally, you can access the MAC address and timestamp for further processing
         print(f"MAC Address: {mac_address}")
         print(f"Timestamp: {frame_timestamp}")
-        print({
-            "number_of_vehicles_detected": results.get("number_of_vehicles_detected", 0),
+        result_callback = lambda result: print({
+            "number_of_vehicles_detected": result["number_of_vehicles_detected"],
             "detected_vehicles": [
                 {
-                    key: vehicle.get(key, None)
-                    for key in ["vehicle_id", "vehicle_type", "detection_confidence"]
+                    "vehicle_id": vehicle["vehicle_id"],
+                    "vehicle_type": vehicle["vehicle_type"],
+                    "detection_confidence": vehicle["detection_confidence"],
+                    "color_info": vehicle["color_info"],
+                    "model_info": vehicle["model_info"],
+                    "speed_info": vehicle["speed_info"]
                 }
-                for vehicle in results.get('detected_vehicles', [])
+                for vehicle in result['detected_vehicles']
             ]
         })
+        result_callback(results)
 
 consumer.close()

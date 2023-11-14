@@ -192,7 +192,7 @@ class VehicleDetectionTracker:
                     # Calculate time intervals (delta_t) and distances traveled between successive frames
                     for i in range(1, len(timestamps)):
                         t1, t2 = timestamps[i - 1], timestamps[i]
-                        delta_t = (t2 - t1).total_seconds()
+                        delta_t = int(t2) - int(t1)
                         if delta_t > 0:
                             x1, y1 = positions[i - 1]
                             x2, y2 = positions[i]
@@ -203,11 +203,16 @@ class VehicleDetectionTracker:
                     
                     # Calculate speeds in meters per second (mps) for each frame and then average them
                     speeds = [distance / delta_t for distance, delta_t in zip(distance_list, delta_t_list)]
-                    avg_speed_mps = sum(speeds) / len(speeds)
+                    if len(speeds) > 0:
+                        avg_speed_mps = sum(speeds) / len(speeds)
+                    else:
+                        avg_speed_mps = None
 
                     # Convert the average speed from meters per second (mps) to kilometers per hour (kph)
-                    speed_kph = self._convert_meters_per_second_to_kmph(avg_speed_mps)
-
+                    if avg_speed_mps is not None:
+                        speed_kph = self._convert_meters_per_second_to_kmph(avg_speed_mps)
+                    else:
+                        speed_kph = None
                     # Calculate the direction based on the change in position between the first and last frame
                     initial_x, initial_y = positions[0]
                     final_x, final_y = positions[-1]

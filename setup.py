@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='VehicleDetectionTracker',  
-    version='0.0.29',
+    version='0.0.30',
     packages=find_packages(),
     include_package_data=True,
     package_data={'VehicleDetectionTracker': ['data/*']},
@@ -39,7 +39,7 @@ This setup script configures the installation of the VehicleDetectionTracker pac
 
 Project Details:
 - Name: VehicleDetectionTracker
-- Version: 0.0.29
+- Version: 0.0.30
 - Author: Sergio Sánchez Sánchez
 - Email: dreamsoftware92@gmail.com
 - Description: VehicleDetectionTracker is a package that enables effortless tracking and detection of vehicles in images and videos using advanced algorithms. Ideal for enhancing your computer vision project with vehicle recognition and tracking.
