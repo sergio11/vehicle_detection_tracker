@@ -4,7 +4,7 @@ import json
 
 conf = {
     'bootstrap.servers': '192.168.1.39:9092"',  # Configure this to your Kafka broker's address.
-    'group.id': 'my-group',
+    'group.id': 'my-group-1',
     'auto.offset.reset': 'earliest'
 }
 
@@ -30,15 +30,15 @@ while True:
         payload = json.loads(msg.value())
         
         mac_address = payload.get('mac_address', '')
-        timestamp = payload.get('timestamp', '')
+        frame_timestamp = payload.get('frame_timestamp', '')
         frame_data = payload.get('frame_data', '')
 
         # Process the frame with the tracker
-        results = vehicleDetection.process_frame_base64(frame_data)
+        results = vehicleDetection.process_frame_base64(frame_data, frame_timestamp)
     
         # Optionally, you can access the MAC address and timestamp for further processing
         print(f"MAC Address: {mac_address}")
-        print(f"Timestamp: {timestamp}")
+        print(f"Timestamp: {frame_timestamp}")
         print({
             "number_of_vehicles_detected": results.get("number_of_vehicles_detected", 0),
             "detected_vehicles": [
