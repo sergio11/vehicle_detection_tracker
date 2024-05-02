@@ -14,6 +14,8 @@ Whether you're working on traffic management, video analysis, or machine learnin
 [![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker/blob/main/LICENSE)
 
+🙏🙏 I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
+
 ## Features 🌟
 
 - Efficient vehicle detection and tracking in images and videos.
@@ -229,6 +231,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 - This package is powered by [ultralytics YOLO](https://github.com/ultralytics/ultralytics) for object detection.
 - Special thanks to the open-source community for their contributions.
+- I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
 
 ## Contribution
 
