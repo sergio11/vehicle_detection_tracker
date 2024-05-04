@@ -14,6 +14,8 @@ Whether you're working on traffic management, video analysis, or machine learnin
 [![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker/blob/main/LICENSE)
 
+🙏🙏 I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
+
 ## Features 🌟
 
 - Efficient vehicle detection and tracking in images and videos.
@@ -136,7 +138,7 @@ import json
 
 conf = {
     'bootstrap.servers': '192.168.1.39:9092"',  # Configure this to your Kafka broker's address.
-    'group.id': 'my-group',
+    'group.id': 'my-group-1',
     'auto.offset.reset': 'earliest'
 }
 
@@ -162,25 +164,30 @@ while True:
         payload = json.loads(msg.value())
         
         mac_address = payload.get('mac_address', '')
-        timestamp = payload.get('timestamp', '')
+        frame_timestamp = payload.get('frame_timestamp', '')
         frame_data = payload.get('frame_data', '')
 
         # Process the frame with the tracker
-        results = vehicleDetection.process_frame_base64(frame_data)
+        results = vehicleDetection.process_frame_base64(frame_data, frame_timestamp)
     
         # Optionally, you can access the MAC address and timestamp for further processing
         print(f"MAC Address: {mac_address}")
-        print(f"Timestamp: {timestamp}")
-        print({
-            "number_of_vehicles_detected": results.get("number_of_vehicles_detected", 0),
+        print(f"Timestamp: {frame_timestamp}")
+        result_callback = lambda result: print({
+            "number_of_vehicles_detected": result["number_of_vehicles_detected"],
             "detected_vehicles": [
                 {
-                    key: vehicle.get(key, None)
-                    for key in ["vehicle_id", "vehicle_type", "detection_confidence"]
+                    "vehicle_id": vehicle["vehicle_id"],
+                    "vehicle_type": vehicle["vehicle_type"],
+                    "detection_confidence": vehicle["detection_confidence"],
+                    "color_info": vehicle["color_info"],
+                    "model_info": vehicle["model_info"],
+                    "speed_info": vehicle["speed_info"]
                 }
-                for vehicle in results.get('detected_vehicles', [])
+                for vehicle in result['detected_vehicles']
             ]
         })
+        result_callback(results)
 
 consumer.close()
 ```
@@ -224,6 +231,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 - This package is powered by [ultralytics YOLO](https://github.com/ultralytics/ultralytics) for object detection.
 - Special thanks to the open-source community for their contributions.
+- I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
 
 ## Contribution
 
