@@ -252,6 +252,7 @@ class VehicleDetectionTracker:
                         "height": h.item()
                     },
                     "vehicle_frame_base64": vehicle_frame_base64,
+                    "vehicle_frame_timestamp": frame_timestamp, 
                     "color_info": color_info_json,
                     "model_info": model_info_json,
                     "speed_info": {

@@ -82,16 +82,24 @@ Speed: 5.0ms preprocess, 171.0ms inference, 2.0ms postprocess per image at shape
   "detected_vehicles": [  // List of information about detected vehicles
     {
       "vehicle_id": 5,  // Unique identifier for the detected vehicle
-      "vehicle_type": "car",  // Type of the detected vehicle
-      "detection_confidence": 0.4797525107860565,  // Confidence score of the detection
-      "color_info": '[{"color": "Black", "prob": "0.2470433"}, {"color": "White", "prob": "0.21236196"}, {"color": "Blue", "prob": "0.15445676"}]',  // Detected vehicle color information
-      "model_info": '[{"make": "Jeep", "model": "Wrangler", "prob": "0.022544071"}, {"make": "Ford", "model": "Mustang", "prob": "0.014573687"}, {"make": "Honda", "model": "Civic", "prob": "0.010537574"}]',  // Detected vehicle make and model information
-      "speed_info": {
+      "vehicle_type": "car",  // Type of the detected vehicle (e.g., "car", "truck")
+      "detection_confidence": 0.4797525107860565,  // Confidence score of the detection, indicating how accurate the model believes the detection is
+      "color_info": '[{"color": "Black", "prob": "0.2470433"}, {"color": "White", "prob": "0.21236196"}, {"color": "Blue", "prob": "0.15445676"}]',  // Detected vehicle color information with respective probabilities
+      "model_info": '[{"make": "Jeep", "model": "Wrangler", "prob": "0.022544071"}, {"make": "Ford", "model": "Mustang", "prob": "0.014573687"}, {"make": "Honda", "model": "Civic", "prob": "0.010537574"}]',  // Detected vehicle make and model information with respective probabilities
+      "speed_info": {  // Information about the vehicle's speed
         "kph": 68.1191847125589,  // Calculated speed in kilometers per hour (kph)
         "reliability": 1.0,  // Reliability of the speed measurement
-        "direction_label": "Top Left",  // Label indicating the direction of the vehicle
-        "direction": -2.2559461480857093  // Direction in radians
-      }
+        "direction_label": "Top Left",  // Label indicating the direction of the vehicle (e.g., "Top Left" means moving towards the top left of the frame)
+        "direction": -2.2559461480857093  // Direction of movement in radians
+      },
+      "vehicle_coordinates": {  // Coordinates and dimensions of the detected vehicle in the frame
+        "x": 123.45,  // Horizontal position (x-axis) of the vehicle in the frame
+        "y": 678.90,  // Vertical position (y-axis) of the vehicle in the frame
+        "width": 50.0,  // Width of the bounding box around the vehicle
+        "height": 30.0  // Height of the bounding box around the vehicle
+      },
+      "vehicle_frame_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",  // Base64 encoded image of the video frame where the vehicle was detected
+      "vehicle_frame_timestamp": "2024-08-10T15:30:45.123456Z"  // Timestamp indicating the exact moment when the video frame was captured
     }
   ]
 }
