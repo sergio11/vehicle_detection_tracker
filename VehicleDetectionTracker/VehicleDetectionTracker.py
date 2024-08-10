@@ -192,7 +192,7 @@ class VehicleDetectionTracker:
                     # Calculate time intervals (delta_t) and distances traveled between successive frames
                     for i in range(1, len(timestamps)):
                         t1, t2 = timestamps[i - 1], timestamps[i]
-                        delta_t = int(t2) - int(t1)
+                        delta_t = t2.timestamp() - t1.timestamp()
                         if delta_t > 0:
                             x1, y1 = positions[i - 1]
                             x2, y2 = positions[i]
