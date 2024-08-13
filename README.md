@@ -10,6 +10,10 @@ Effortlessly track and detect vehicles in images and videos using state-of-the-a
 
 Whether you're working on traffic management, video analysis, or machine learning projects, the VehicleDetectionTracker provides the tools you need to enhance your results. Explore detailed documentation and examples on the repository, and get started with vehicle tracking in no time! 📚🚗
 
+A key application of this module is in **TrafficSentinel**, a high-quality project featuring an advanced architecture designed for production. **TrafficSentinel** leverages the **VehicleDetectionTracker** for real-time traffic management and analysis, showcasing its capability to enhance automated surveillance and traffic monitoring systems. The project demonstrates a robust and scalable architecture that integrates seamlessly with **VehicleDetectionTracker** for optimal performance in real-world scenarios.
+
+🔗 Explore detailed documentation and examples on the repository: [TrafficSentinel Architecture](https://github.com/sergio11/traffic_sentinel_architecture) and study the advanced architecture designed for production.
+
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
 [![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker/blob/main/LICENSE)
