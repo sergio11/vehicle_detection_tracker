@@ -7,10 +7,10 @@ setup(
     include_package_data=True,
     package_data={'VehicleDetectionTracker': ['data/*']},
     install_requires=[
-        'opencv-python==4.8.1.78',
+        'opencv-python==4.11.0.86',
         'imutils==0.5.4',
-        'ultralytics==8.0.145',
-        'tensorflow==2.14.0'
+        'ultralytics==8.3.87',
+        'tensorflow==2.18.0'
     ],
     author='Sergio Sánchez Sánchez',
     author_email='dreamsoftware92@gmail.com',
@@ -26,6 +26,8 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     python_requires='>=3.7, <4',
     long_description = open('README.md', encoding='utf-8').read(),
@@ -47,9 +49,10 @@ Project Details:
 - Keywords: Vehicle tracking, Object detection, Computer vision, Video processing, Traffic analysis, Traffic management, Automated surveillance, Vehicle recognition, Video analysis, Machine learning
 
 Requirements:
-- opencv-python-headless 4.8.1.78
+- opencv-python  4.11.0.86
 - imutils 0.5.4
-- ultralytics 8.0.145
+- ultralytics 8.3.87
+- tensorflow 2.18.0
 
 Development Status: Beta
 
