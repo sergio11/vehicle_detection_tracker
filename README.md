@@ -20,6 +20,18 @@ A key application of this module is in **TrafficSentinel**, a high-quality proje
 
 🙏🙏 I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
 
+## ⚠️ Disclaimer  
+
+**VehicleDetectionTracker** is an experimental project designed **for advanced learning and research purposes** in the field of computer vision. It leverages **YOLO object detection** and tracking technologies for vehicle detection and tracking, as well as integrates **Car Make and Model classification** and **vehicle color recognition** features, powered by **Spectrico’s** open-source tools.
+
+The **Car Make and Model classifier** is based on **YOLOv3** for object detection, and **MobileNet** for classification, allowing accurate identification of the make, model, and color of vehicles. This classifier works with YOLOv3 for vehicle detection and MobileNet for identifying vehicle makes and models. Please note that the project relies on **Spectrico’s** car recognition technology and their open-source repositories:
+
+- [Spectrico Car Make and Model Classifier YOLOv3 Python](https://web.archive.org/web/20201122175945/https://github.com/spectrico/car-make-model-classifier-yolo3-python)
+- [Car Make and Model Classifier YOLOv3 Python - Soheil Paper](https://github.com/soheilpaper/car-make-model-classifier-yolo3-python)
+- [Spectrico Car Color Classifier YOLOv3 Python](https://web.archive.org/web/20200917120722/https://github.com/spectrico/car-color-classifier-yolo3-python)
+
+This project is intended **solely for educational exploration** and is not intended for commercial or production-level use.
+
 ## Features 🌟
 
 - Efficient vehicle detection and tracking in images and videos.
@@ -234,6 +246,17 @@ Here are some screenshots that demonstrate the functionality of VehicleDetection
 |-------------- |-------------- |
 | ![Screenshot 7](screenshots/screenshot_11.PNG) | ![Screenshot 6](screenshots/screenshot_12.PNG) |
 
+## ⚠️ Disclaimer  
+
+**VehicleDetectionTracker** is an experimental project designed **for advanced learning and research purposes** in the field of computer vision. It leverages **YOLO object detection** and tracking technologies for vehicle detection and tracking, as well as integrates **Car Make and Model classification** and **vehicle color recognition** features, powered by **Spectrico’s** open-source tools.
+
+The **Car Make and Model classifier** is based on **YOLOv3** for object detection, and **MobileNet** for classification, allowing accurate identification of the make, model, and color of vehicles. This classifier works with YOLOv3 for vehicle detection and MobileNet for identifying vehicle makes and models. Please note that the project relies on **Spectrico’s** car recognition technology and their open-source repositories:
+
+- [Spectrico Car Make and Model Classifier YOLOv3 Python](https://web.archive.org/web/20201122175945/https://github.com/spectrico/car-make-model-classifier-yolo3-python)
+- [Car Make and Model Classifier YOLOv3 Python - Soheil Paper](https://github.com/soheilpaper/car-make-model-classifier-yolo3-python)
+- [Spectrico Car Color Classifier YOLOv3 Python](https://web.archive.org/web/20200917120722/https://github.com/spectrico/car-color-classifier-yolo3-python)
+
+This project is intended **solely for educational exploration** and is not intended for commercial or production-level use.
 
 ## License 📜
 
