@@ -15,7 +15,6 @@ A key application of this module is in **TrafficSentinel**, a high-quality proje
 🔗 Explore detailed documentation and examples on the repository: [TrafficSentinel Architecture](https://github.com/sergio11/traffic_sentinel_architecture) and study the advanced architecture designed for production.
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
-[![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker/blob/main/LICENSE)
 
 🙏🙏 I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
@@ -39,14 +38,6 @@ This project is intended **solely for educational exploration** and is not inten
 - Precise determination of the direction of each detected vehicle.
 - Vehicle color estimation.
 - Easy integration into your computer vision projects.
-
-## Installation 🚀
-
-You can easily install VehicleDetectionTracker using pip:
-
-```bash
-pip install VehicleDetectionTracker
-```
 
 ## How Vehicle Detection Works
 
@@ -279,7 +270,6 @@ VehicleDetectionTracker is developed and maintained by **Sergio Sánchez Sánche
 ## Happy Tracking! 🚀👁️
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
-[![PyPI](https://img.shields.io/pypi/v/VehicleDetectionTracker.svg?style=flat-square)](https://pypi.org/project/VehicleDetectionTracker/)
 
 ## Visitors Count
 
