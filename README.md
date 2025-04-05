@@ -1,18 +1,20 @@
-# 🚗 VehicleDetectionTracker: Real-time vehicle detection and tracking powered by YOLO. 🚙🚕
+# 🚗 VehicleDetectionTracker: Real-time Vehicle Detection and Tracking with YOLO 🚙🚕
 
-Effortlessly track and detect vehicles in images and videos using state-of-the-art YOLO object detection and tracking, powered by Ultralytics. Boost your computer vision project with the VehicleDetectionTracker, a versatile Python package that simplifies vehicle tracking and detection in a variety of applications. 🚙🚕
+**VehicleDetectionTracker** is a personal **Proof of Concept (POC)** for real-time vehicle detection and tracking, powered by YOLO (You Only Look Once), built using **Ultralytics**. This project is an exploration into applying advanced object detection techniques for vehicle tracking, aiming to demonstrate the capabilities of YOLO for detecting and tracking vehicles in images and videos. 🚙🚕
 
-- 👀 Detect vehicles in real-time or from pre-recorded videos.
-- 📍 Accurately track vehicles' positions.
-- 🎨 Brand and color classification. The classifiers are based on MobileNet v3 (Alibaba MNN backend).
-- 🚀 Empower traffic analysis, automated surveillance, and more.
-- 🔍 Harness the capabilities of YOLO for precise object detection.
+- 👀 Experiment with detecting vehicles in **real-time** or from **pre-recorded videos**.
+- 📍 Track vehicle positions and follow their movements across frames.
+- 🎨 Explore vehicle classification by **brand** and **color**, powered by MobileNet v3 (with Alibaba MNN backend).
+- 🚀 This POC can serve as a foundation for applications like traffic analysis, surveillance, or automated vehicle monitoring.
+- 🔍 Experiment with YOLO for **precise object detection** in dynamic environments.
 
-Whether you're working on traffic management, video analysis, or machine learning projects, the VehicleDetectionTracker provides the tools you need to enhance your results. Explore detailed documentation and examples on the repository, and get started with vehicle tracking in no time! 📚🚗
+This **POC** serves as a **learning project** to explore real-time vehicle tracking and detection using cutting-edge machine learning techniques. The **VehicleDetectionTracker** provides a simple framework to experiment with vehicle tracking, but it’s not intended to be a finished, production-ready product.
 
-A key application of this module is in **TrafficSentinel**, a high-quality project featuring an advanced architecture designed for production. **TrafficSentinel** leverages the **VehicleDetectionTracker** for real-time traffic management and analysis, showcasing its capability to enhance automated surveillance and traffic monitoring systems. The project demonstrates a robust and scalable architecture that integrates seamlessly with **VehicleDetectionTracker** for optimal performance in real-world scenarios.
+The project demonstrates how to leverage YOLO's powerful detection capabilities for various real-world scenarios, such as traffic monitoring or video analysis. While it is far from a complete system, the goal is to **validate the approach** and refine the application for future development.
 
-🔗 Explore detailed documentation and examples on the repository: [TrafficSentinel Architecture](https://github.com/sergio11/traffic_sentinel_architecture) and study the advanced architecture designed for production.
+One of the **use cases** explored in this POC is the integration with **TrafficSentinel**, a more complex project that uses the **VehicleDetectionTracker** for **real-time traffic management and surveillance**. While **TrafficSentinel** is intended as a more scalable, production-level solution, this **POC** serves as a testbed for concepts that might eventually be incorporated into future versions of the project.
+
+🔗 Explore the repository for more details, experiment with the code, and get started with your own vehicle detection and tracking tests! [TrafficSentinel Architecture](https://github.com/sergio11/traffic_sentinel_architecture).
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker/blob/main/LICENSE)
