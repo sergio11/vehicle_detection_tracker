@@ -261,14 +261,6 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 - Special thanks to the open-source community for their contributions.
 - I would like to extend my gratitude to the team at Spectrico for their car make and model recognition module. Thanks to their technology, my project has significantly improved in accuracy and efficiency in vehicle identification. You can find more information about their car make and model recognition classifier [here](http://spectrico.com/car-make-model-recognition.html).
 
-## Contribution
-
-Contributions to VehicleDetectionTracker are highly encouraged! If you're interested in adding new features, resolving bugs, or enhancing the project's functionality, please feel free to submit pull requests.
-
-## Get in Touch 📬
-
-VehicleDetectionTracker is developed and maintained by **Sergio Sánchez Sánchez** (Dream Software). Special thanks to the open-source community and the contributors who have made this project possible. If you have any questions, feedback, or suggestions, feel free to reach out at  [dreamsoftware92@gmail.com](mailto:dreamsoftware92@gmail.com).
-
 ## Happy Tracking! 🚀👁️
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
@@ -276,8 +268,3 @@ VehicleDetectionTracker is developed and maintained by **Sergio Sánchez Sánche
 ## Visitors Count
 
 <img width="auto" src="https://profile-counter.glitch.me/vehicle_detection_tracker/count.svg" />
-
-## Please Share & Star the repository to keep me motivated.
-  <a href = "https://github.com/sergio11/vehicle_detection_tracker/stargazers">
-     <img src = "https://img.shields.io/github/stars/sergio11/vehicle_detection_tracker" />
-  </a>
