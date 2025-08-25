@@ -264,7 +264,3 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## Happy Tracking! 🚀👁️
 
 [![GitHub](https://img.shields.io/badge/GitHub-View%20on%20GitHub-blue?style=flat-square)](https://github.com/sergio11/vehicle_detection_tracker)
-
-## Visitors Count
-
-<img width="auto" src="https://profile-counter.glitch.me/vehicle_detection_tracker/count.svg" />
